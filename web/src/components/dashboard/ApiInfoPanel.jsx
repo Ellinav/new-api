@@ -20,10 +20,6 @@ For commercial licensing, please contact support@quantumnous.com
 import React from 'react';
 import { Card, Avatar, Tag, Divider, Empty } from '@douyinfe/semi-ui';
 import { Server, Gauge, ExternalLink } from 'lucide-react';
-import {
-  IllustrationConstruction,
-  IllustrationConstructionDark,
-} from '@douyinfe/semi-illustrations';
 import ScrollableContainer from '../common/ui/ScrollableContainer';
 
 const ApiInfoPanel = ({
@@ -100,14 +96,17 @@ const ApiInfoPanel = ({
             </React.Fragment>
           ))
         ) : (
-          <div className='flex justify-center items-center min-h-[20rem] w-full'>
+          <div className='flex justify-center items-center py-8'>
             <Empty
-              image={<IllustrationConstruction style={ILLUSTRATION_SIZE} />}
-              darkModeImage={
-                <IllustrationConstructionDark style={ILLUSTRATION_SIZE} />
+              image={
+                <img
+                  src='/nothing.png'
+                  alt='No FAQ'
+                  style={{ width: 150, height: 150 }}
+                />
               }
-              title={t('暂无API信息')}
-              description={t('请联系管理员在系统设置中配置API信息')}
+              title={t('暂无常见问答')}
+              description={t('请联系管理员在系统设置中配置常见问答')}
             />
           </div>
         )}

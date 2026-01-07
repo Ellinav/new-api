@@ -65,7 +65,15 @@ const HeaderBar = ({ onMobileMenuToggle, drawerOpen }) => {
   const { mainNavLinks } = useNavigation(t, docsLink, headerNavModules);
 
   return (
-    <header className='text-semi-color-text-0 sticky top-0 z-50 transition-colors duration-300 bg-white/75 dark:bg-zinc-900/75 backdrop-blur-lg'>
+    <header
+      className='sticky top-0 z-50 transition-all duration-300 backdrop-blur-md'
+      style={{
+        // 暖米色半透明：rgba(255, 250, 240, 0.85) - FloralWhite 调
+        background: 'rgba(138, 92, 246, 0.8)',
+        borderBottom: '1px solid rgba(138, 92, 246, 0.8)', // 淡淡的烤面包色边框
+        boxShadow: '0 4px 20px rgba(190, 154, 110, 0.49)', // 暖橙色的柔光阴影
+      }}
+    >
       <NoticeModal
         visible={noticeVisible}
         onClose={handleNoticeClose}

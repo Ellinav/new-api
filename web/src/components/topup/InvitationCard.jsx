@@ -63,8 +63,11 @@ const InvitationCard = ({
             <div
               className='relative h-30'
               style={{
-                '--palette-primary-darkerChannel': '0 75 80',
-                backgroundImage: `linear-gradient(0deg, rgba(var(--palette-primary-darkerChannel) / 80%), rgba(var(--palette-primary-darkerChannel) / 80%)), url('/cover-4.webp')`,
+                // 1. 删除原有的 teal 颜色变量
+                // 2. 修改 backgroundImage:
+                //    - 使用 rgba(0, 0, 0, 0.6) 黑色遮罩
+                //    - 图片路径改为 '/bg2.png'
+                backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/bg2.png')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

@@ -222,10 +222,10 @@ const PricingCardView = ({
     return (
       <div className='flex justify-center items-center py-20'>
         <Empty
-          image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
-          darkModeImage={
-            <IllustrationNoResultDark style={{ width: 150, height: 150 }} />
-          }
+          // 把这里改成你的图片路径
+          image={<img src='/empty.png' style={{ width: 150, height: 150 }} />}
+          // 如果你想在暗黑模式下用另一张图，就解开下面这行的注释并修改路径
+          // darkModeImage={<img src="/empty-dark.png" style={{ width: 150, height: 150 }} />}
           description={t('搜索无结果')}
         />
       </div>

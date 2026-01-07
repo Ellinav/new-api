@@ -1,20 +1,5 @@
 /*
 Copyright (C) 2025 QuantumNous
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as
-published by the Free Software Foundation, either version 3 of the
-License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-GNU Affero General Public License for more details.
-
-You should have received a copy of the GNU Affero General Public License
-along with this program. If not, see <https://www.gnu.org/licenses/>.
-
-For commercial licensing, please contact support@quantumnous.com
 */
 
 import React from 'react';
@@ -29,15 +14,31 @@ const Navigation = ({
   pricingRequireAuth,
 }) => {
   const renderNavLinks = () => {
+    // 基础样式
     const baseClasses =
-      'flex-shrink-0 flex items-center gap-1 font-semibold rounded-md transition-all duration-200 ease-in-out';
-    const hoverClasses = 'hover:text-semi-color-primary';
+      'flex-shrink-0 flex items-center gap-2 font-bold text-lg rounded-md transition-all duration-200 ease-in-out';
+    const hoverClasses =
+      'hover:text-semi-color-primary hover:bg-semi-color-fill-0'; // 加了个背景色hover效果
     const spacingClasses = isMobile ? 'p-1' : 'p-2';
 
     const commonLinkClasses = `${baseClasses} ${spacingClasses} ${hoverClasses}`;
 
     return mainNavLinks.map((link) => {
-      const linkContent = <span>{link.text}</span>;
+      // ========== 修改重点：在这里加上了图片 icon ==========
+      const linkContent = (
+        <div className='flex items-center'>
+          {/* 如果有 icon 就显示图片 */}
+          {link.icon && (
+            <img
+              src={link.icon}
+              alt={link.text}
+              className='w-5 h-5 mr-1.5 object-contain' // 控制图标大小和间距
+            />
+          )}
+          <span>{link.text}</span>
+        </div>
+      );
+      // =================================================
 
       if (link.isExternal) {
         return (

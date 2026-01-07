@@ -18,12 +18,13 @@ For commercial licensing, please contact support@quantumnous.com
 */
 
 import { useCallback, useEffect, useState } from 'react';
-import { API } from '../../helpers';
+import { API, toBoolean } from '../../helpers';
 
 export const useModelDeploymentSettings = () => {
   const [loading, setLoading] = useState(true);
   const [settings, setSettings] = useState({
     'model_deployment.ionet.enabled': false,
+    'model_deployment.ionet.api_key': '',
   });
   const [connectionState, setConnectionState] = useState({
     loading: false,
@@ -34,13 +35,24 @@ export const useModelDeploymentSettings = () => {
   const getSettings = async () => {
     try {
       setLoading(true);
-      const res = await API.get('/api/deployments/settings');
+      const res = await API.get('/api/option/');
       const { success, data } = res.data;
-
+      
       if (success) {
-        setSettings({
-          'model_deployment.ionet.enabled': data?.enabled === true,
+        const newSettings = {
+          'model_deployment.ionet.enabled': false,
+          'model_deployment.ionet.api_key': '',
+        };
+        
+        data.forEach((item) => {
+          if (item.key.endsWith('enabled')) {
+            newSettings[item.key] = toBoolean(item.value);
+          } else if (newSettings.hasOwnProperty(item.key)) {
+            newSettings[item.key] = item.value || '';
+          }
         });
+        
+        setSettings(newSettings);
       }
     } catch (error) {
       console.error('Failed to get model deployment settings:', error);
@@ -53,7 +65,10 @@ export const useModelDeploymentSettings = () => {
     getSettings();
   }, []);
 
-  const isIoNetEnabled = settings['model_deployment.ionet.enabled'];
+  const apiKey = settings['model_deployment.ionet.api_key'];
+  const isIoNetEnabled = settings['model_deployment.ionet.enabled'] && 
+                        apiKey && 
+                        apiKey.trim() !== '';
 
   const buildConnectionError = (rawMessage, fallbackMessage = 'Connection failed') => {
     const message = (rawMessage || fallbackMessage).trim();
@@ -70,12 +85,18 @@ export const useModelDeploymentSettings = () => {
     return { type: 'unknown', message };
   };
 
-  const testConnection = useCallback(async () => {
+  const testConnection = useCallback(async (apiKey) => {
+    const key = (apiKey || '').trim();
+    if (key === '') {
+      setConnectionState({ loading: false, ok: null, error: null });
+      return;
+    }
+
     setConnectionState({ loading: true, ok: null, error: null });
     try {
       const response = await API.post(
-        '/api/deployments/settings/test-connection',
-        {},
+        '/api/deployments/test-connection',
+        { api_key: key },
         { skipErrorHandler: true },
       );
 
@@ -102,15 +123,16 @@ export const useModelDeploymentSettings = () => {
 
   useEffect(() => {
     if (!loading && isIoNetEnabled) {
-      testConnection();
+      testConnection(apiKey);
       return;
     }
     setConnectionState({ loading: false, ok: null, error: null });
-  }, [loading, isIoNetEnabled, testConnection]);
+  }, [loading, isIoNetEnabled, apiKey, testConnection]);
 
   return {
     loading,
     settings,
+    apiKey,
     isIoNetEnabled,
     refresh: getSettings,
     connectionLoading: connectionState.loading,

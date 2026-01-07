@@ -32,10 +32,9 @@ import { createCardProPagination } from '../../../helpers/utils';
 const DeploymentsPage = () => {
   const deploymentsData = useDeploymentsData();
   const isMobile = useIsMobile();
-
+  
   // Create deployment modal state
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const batchOperationsEnabled = false;
 
   const {
     // Edit state
@@ -82,7 +81,7 @@ const DeploymentsPage = () => {
         visible={showEdit}
         handleClose={closeEdit}
       />
-
+      
       <CreateDeploymentModal
         visible={showCreateModal}
         onCancel={() => setShowCreateModal(false)}
@@ -110,7 +109,6 @@ const DeploymentsPage = () => {
               setEditingDeployment={setEditingDeployment}
               setShowEdit={setShowEdit}
               batchDeleteDeployments={batchDeleteDeployments}
-              batchOperationsEnabled={batchOperationsEnabled}
               compactMode={compactMode}
               setCompactMode={setCompactMode}
               showCreateModal={showCreateModal}
@@ -140,10 +138,7 @@ const DeploymentsPage = () => {
         })}
         t={deploymentsData.t}
       >
-        <DeploymentsTable
-          {...deploymentsData}
-          batchOperationsEnabled={batchOperationsEnabled}
-        />
+        <DeploymentsTable {...deploymentsData} />
       </CardPro>
     </>
   );

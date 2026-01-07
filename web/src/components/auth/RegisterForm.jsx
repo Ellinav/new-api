@@ -31,7 +31,15 @@ import {
   onDiscordOAuthClicked,
 } from '../../helpers';
 import Turnstile from 'react-turnstile';
-import { Button, Card, Checkbox, Divider, Form, Icon, Modal } from '@douyinfe/semi-ui';
+import {
+  Button,
+  Card,
+  Checkbox,
+  Divider,
+  Form,
+  Icon,
+  Modal,
+} from '@douyinfe/semi-ui';
 import Title from '@douyinfe/semi-ui/lib/es/typography/title';
 import Text from '@douyinfe/semi-ui/lib/es/typography/text';
 import {
@@ -57,11 +65,6 @@ import { SiDiscord } from 'react-icons/si';
 const RegisterForm = () => {
   let navigate = useNavigate();
   const { t } = useTranslation();
-  const githubButtonTextKeyByState = {
-    idle: '使用 GitHub 继续',
-    redirecting: '正在跳转 GitHub...',
-    timeout: '请求超时，请刷新页面后重新发起 GitHub 登录',
-  };
   const [inputs, setInputs] = useState({
     username: '',
     password: '',
@@ -93,10 +96,9 @@ const RegisterForm = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [hasUserAgreement, setHasUserAgreement] = useState(false);
   const [hasPrivacyPolicy, setHasPrivacyPolicy] = useState(false);
-  const [githubButtonState, setGithubButtonState] = useState('idle');
+  const [githubButtonText, setGithubButtonText] = useState('使用 GitHub 继续');
   const [githubButtonDisabled, setGithubButtonDisabled] = useState(false);
   const githubTimeoutRef = useRef(null);
-  const githubButtonText = t(githubButtonTextKeyByState[githubButtonState]);
 
   const logo = getLogo();
   const systemName = getSystemName();
@@ -121,7 +123,7 @@ const RegisterForm = () => {
       setTurnstileEnabled(true);
       setTurnstileSiteKey(status.turnstile_site_key);
     }
-    
+
     // 从 status 获取用户协议和隐私政策的启用状态
     setHasUserAgreement(status.user_agreement_enabled || false);
     setHasPrivacyPolicy(status.privacy_policy_enabled || false);
@@ -257,13 +259,13 @@ const RegisterForm = () => {
     }
     setGithubLoading(true);
     setGithubButtonDisabled(true);
-    setGithubButtonState('redirecting');
+    setGithubButtonText(t('正在跳转 GitHub...'));
     if (githubTimeoutRef.current) {
       clearTimeout(githubTimeoutRef.current);
     }
     githubTimeoutRef.current = setTimeout(() => {
       setGithubLoading(false);
-      setGithubButtonState('timeout');
+      setGithubButtonText(t('请求超时，请刷新页面后重新发起 GitHub 登录'));
       setGithubButtonDisabled(true);
     }, 20000);
     try {
@@ -363,9 +365,12 @@ const RegisterForm = () => {
             </Title>
           </div>
 
-          <Card className='border-0 !rounded-2xl overflow-hidden'>
+          <Card
+            className='border-0 !rounded-2xl overflow-hidden shadow-2xl auth-card-bg'
+            style={{}}
+          >
             <div className='flex justify-center pt-6 pb-2'>
-              <Title heading={3} className='text-gray-800 dark:text-gray-200'>
+              <Title heading={3} className='text-gray-1'>
                 {t('注 册')}
               </Title>
             </div>
@@ -405,7 +410,15 @@ const RegisterForm = () => {
                     theme='outline'
                     className='w-full h-12 flex items-center justify-center !rounded-full border border-gray-200 hover:bg-gray-50 transition-colors'
                     type='tertiary'
-                    icon={<SiDiscord style={{ color: '#5865F2', width: '20px', height: '20px' }} />}
+                    icon={
+                      <SiDiscord
+                        style={{
+                          color: '#5865F2',
+                          width: '20px',
+                          height: '20px',
+                        }}
+                      />
+                    }
                     onClick={handleDiscordClick}
                     loading={discordLoading}
                   >
@@ -501,9 +514,12 @@ const RegisterForm = () => {
             </Title>
           </div>
 
-          <Card className='border-0 !rounded-2xl overflow-hidden'>
+          <Card
+            className='border-0 !rounded-2xl overflow-hidden shadow-2xl auth-card-bg'
+            style={{}}
+          >
             <div className='flex justify-center pt-6 pb-2'>
-              <Title heading={3} className='text-gray-800 dark:text-gray-200'>
+              <Title heading={3} className='text-gray-100'>
                 {t('注 册')}
               </Title>
             </div>
@@ -619,7 +635,9 @@ const RegisterForm = () => {
                     htmlType='submit'
                     onClick={handleSubmit}
                     loading={registerLoading}
-                    disabled={(hasUserAgreement || hasPrivacyPolicy) && !agreedToTerms}
+                    disabled={
+                      (hasUserAgreement || hasPrivacyPolicy) && !agreedToTerms
+                    }
                   >
                     {t('注册')}
                   </Button>
@@ -709,17 +727,20 @@ const RegisterForm = () => {
   };
 
   return (
-    <div className='relative overflow-hidden bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8'>
-      {/* 背景模糊晕染球 */}
-      <div
-        className='blur-ball blur-ball-indigo'
-        style={{ top: '-80px', right: '-80px', transform: 'none' }}
-      />
-      <div
-        className='blur-ball blur-ball-teal'
-        style={{ top: '50%', left: '-120px' }}
-      />
-      <div className='w-full max-w-sm mt-[60px]'>
+    <div
+      className='min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative'
+      style={{
+        backgroundImage: 'url("/bg-img.png")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      }}
+    >
+      {/* 黑色遮罩：加深到 70% */}
+      <div className='auth-mask-layer' />
+
+      <div className='w-full max-w-sm mt-[60px] relative z-10'>
         {showEmailRegister ||
         !(
           status.github_oauth ||

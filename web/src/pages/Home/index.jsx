@@ -62,6 +62,7 @@ import {
   Hunyuan,
   Xinference,
 } from '@lobehub/icons';
+import { Weight } from 'lucide-react';
 
 const { Text } = Typography;
 
@@ -79,6 +80,13 @@ const Home = () => {
     statusState?.status?.server_address || `${window.location.origin}`;
   const endpointItems = API_ENDPOINTS.map((e) => ({ value: e }));
   const [endpointIndex, setEndpointIndex] = useState(0);
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setEndpointIndex((prev) => (prev + 1) % endpointItems.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [endpointItems.length]);
+
   const isChinese = i18n.language.startsWith('zh');
 
   const displayHomePageContent = async () => {
@@ -148,48 +156,76 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [endpointItems.length]);
 
+  const sushiList = [
+    { name: 'Sushi 1', src: '/sushi/1.png' },
+    { name: 'Sushi 2', src: '/sushi/2.png' },
+    { name: 'Sushi 3', src: '/sushi/3.png' },
+    { name: 'Sushi 4', src: '/sushi/4.png' },
+    { name: 'Sushi 5', src: '/sushi/5.png' },
+    { name: 'Sushi 6', src: '/sushi/6.png' },
+    { name: 'Sushi 7', src: '/sushi/7.png' },
+    { name: 'Sushi 8', src: '/sushi/8.png' },
+    { name: 'Sushi 9', src: '/sushi/9.png' },
+    { name: 'Sushi 10', src: '/sushi/10.png' },
+  ];
+
   return (
-    <div className='w-full overflow-x-hidden'>
-      <NoticeModal
-        visible={noticeVisible}
-        onClose={() => setNoticeVisible(false)}
-        isMobile={isMobile}
-      />
-      {homePageContentLoaded && homePageContent === '' ? (
-        <div className='w-full overflow-x-hidden'>
-          {/* Banner 部分 */}
-          <div className='w-full border-b border-semi-color-border min-h-[500px] md:min-h-[600px] lg:min-h-[700px] relative overflow-x-hidden'>
-            {/* 背景模糊晕染球 */}
-            <div className='blur-ball blur-ball-indigo' />
-            <div className='blur-ball blur-ball-teal' />
-            <div className='flex items-center justify-center h-full px-4 py-20 md:py-24 lg:py-32 mt-10'>
-              {/* 居中内容区 */}
-              <div className='flex flex-col items-center justify-center text-center max-w-4xl mx-auto'>
-                <div className='flex flex-col items-center justify-center mb-6 md:mb-8'>
-                  <h1
-                    className={`text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold text-semi-color-text-0 leading-tight ${isChinese ? 'tracking-wide md:tracking-wider' : ''}`}
-                  >
-                    <>
-                      {t('统一的')}
-                      <br />
-                      <span className='shine-text'>{t('大模型接口网关')}</span>
-                    </>
-                  </h1>
-                  <p className='text-base md:text-lg lg:text-xl text-semi-color-text-1 mt-4 md:mt-6 max-w-xl'>
-                    {t('更好的价格，更好的稳定性，只需要将模型基址替换为：')}
-                  </p>
-                  {/* BASE URL 与端点选择 */}
-                  <div className='flex flex-col md:flex-row items-center justify-center gap-4 w-full mt-4 md:mt-6 max-w-md'>
-                    <Input
-                      readonly
-                      value={serverAddress}
-                      className='flex-1 !rounded-full'
-                      size={isMobile ? 'default' : 'large'}
-                      suffix={
-                        <div className='flex items-center gap-2'>
+    <>
+      {/* 1. 全局背景图 (放在最外层) */}
+      <div className='home-background'></div>
+
+      <div className='w-full overflow-x-hidden min-h-screen flex flex-col'>
+        <NoticeModal
+          visible={noticeVisible}
+          onClose={() => setNoticeVisible(false)}
+          isMobile={isMobile}
+        />
+
+        {homePageContentLoaded && homePageContent === '' ? (
+          <div className='flex flex-col items-center justify-center flex-grow px-4 py-20 relative'>
+            {/* 2. 毛玻璃方圆框容器 START */}
+            <div className='glass-panel flex flex-col items-center justify-center text-center'>
+              {/* 标题 */}
+              <h1
+                className={`text-4xl md:text-5xl font-bold text-semi-color-text-0 mb-4 ${isChinese ? 'tracking-wide' : ''}`}
+              >
+                {t('欢迎来到')}{' '}
+                <span className='shine-text' style={{ color: '#a34ce2ff' }}>
+                  {t('寿司喵API站')}
+                </span>
+              </h1>
+
+              {/* 副标题 */}
+              <p className='text-lg text-semi-color-text-0 opacity-80 mb-6 max-w-xl'>
+                {t('URL填入：')}
+              </p>
+
+              {/* 输入框和复制按钮 */}
+              <div className='w-full max-w-md mb-8'>
+                <Input
+                  readonly
+                  value={serverAddress}
+                  // 1. 加一个专门的类名：custom-home-input
+                  className='!rounded-full custom-home-input'
+                  size='large'
+                  // 这里的 style 只负责大概的背景，具体的文字样式我们去 css 里写
+                  style={{
+                    background: '#8a5cf6af',
+                    border: '1px solid rgba(255, 255, 255, 1)',
+                  }}
+                  suffix={
+                    <div className='flex items-center gap-2'>
+                      <div className='hidden md:block'>
+                        <div className='gold-text-wrapper'>
                           <ScrollList
                             bodyHeight={32}
-                            style={{ border: 'unset', boxShadow: 'unset' }}
+                            // 2. 给滚动列表也加一个类名：custom-scroll-suffix
+                            className='custom-scroll-suffix'
+                            style={{
+                              border: 'unset',
+                              boxShadow: 'unset',
+                              background: 'transparent',
+                            }}
                           >
                             <ScrollItem
                               mode='wheel'
@@ -199,157 +235,107 @@ const Home = () => {
                               onSelect={({ index }) => setEndpointIndex(index)}
                             />
                           </ScrollList>
-                          <Button
-                            type='primary'
-                            onClick={handleCopyBaseURL}
-                            icon={<IconCopy />}
-                            className='!rounded-full'
-                          />
                         </div>
-                      }
+                      </div>
+
+                      <div className='h-4 w-[1px] bg-white/20 hidden md:block'></div>
+
+                      <Button
+                        theme='solid'
+                        type='primary'
+                        onClick={handleCopyBaseURL}
+                        icon={<IconCopy />}
+                        className='!rounded-full'
+                        style={{ marginRight: 2 }}
+                      />
+                    </div>
+                  }
+                />
+              </div>
+
+              {/* 按钮组 */}
+              <div className='flex gap-4 justify-center'>
+                <Link to='/console'>
+                  <Button
+                    theme='solid'
+                    type='primary'
+                    size='large'
+                    className='!rounded-2xl px-8 shadow-lg'
+                    style={{
+                      background: 'linear-gradient(135deg, #6366f1, #8b5cf6)',
+                    }} // 渐变色按钮
+                  >
+                    {t('立即注册')}
+                  </Button>
+                </Link>
+
+                {docsLink && (
+                  <Button
+                    theme='light'
+                    size='large'
+                    className='!rounded-2xl px-8 shadow-sm'
+                    style={{
+                      background: '#d54747ff',
+                      color: 'white',
+                    }}
+                    onClick={() => window.open(docsLink, '_blank')}
+                  >
+                    {t('购前必读')}
+                  </Button>
+                )}
+              </div>
+            </div>
+            {/* 毛玻璃方圆框容器 END */}
+
+            {/* 3. 寿司图标区域 */}
+            <div className='mt-8 w-full max-w-4xl'>
+              <div className='text-center mb-6'>
+                <Text
+                  type='primary'
+                  className='text-xl font-bold'
+                  style={{ textShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+                >
+                  {t('欢迎品尝！！')}
+                </Text>
+              </div>
+
+              {/* 图标网格 */}
+              <div className='flex flex-wrap items-center justify-center gap-6 md:gap-8'>
+                {sushiList.map((item, index) => (
+                  <div
+                    key={index}
+                    title={item.name}
+                    className='transition-all duration-300 hover:-translate-y-2'
+                  >
+                    {/* 这里引用你的本地寿司图片 */}
+                    <img
+                      src={item.src}
+                      alt={item.name}
+                      className='sushi-icon'
                     />
                   </div>
-                </div>
-
-                {/* 操作按钮 */}
-                <div className='flex flex-row gap-4 justify-center items-center'>
-                  <Link to='/console'>
-                    <Button
-                      theme='solid'
-                      type='primary'
-                      size={isMobile ? 'default' : 'large'}
-                      className='!rounded-3xl px-8 py-2'
-                      icon={<IconPlay />}
-                    >
-                      {t('获取密钥')}
-                    </Button>
-                  </Link>
-                  {isDemoSiteMode && statusState?.status?.version ? (
-                    <Button
-                      size={isMobile ? 'default' : 'large'}
-                      className='flex items-center !rounded-3xl px-6 py-2'
-                      icon={<IconGithubLogo />}
-                      onClick={() =>
-                        window.open(
-                          'https://github.com/QuantumNous/new-api',
-                          '_blank',
-                        )
-                      }
-                    >
-                      {statusState.status.version}
-                    </Button>
-                  ) : (
-                    docsLink && (
-                      <Button
-                        size={isMobile ? 'default' : 'large'}
-                        className='flex items-center !rounded-3xl px-6 py-2'
-                        icon={<IconFile />}
-                        onClick={() => window.open(docsLink, '_blank')}
-                      >
-                        {t('文档')}
-                      </Button>
-                    )
-                  )}
-                </div>
-
-                {/* 框架兼容性图标 */}
-                <div className='mt-12 md:mt-16 lg:mt-20 w-full'>
-                  <div className='flex items-center mb-6 md:mb-8 justify-center'>
-                    <Text
-                      type='tertiary'
-                      className='text-lg md:text-xl lg:text-2xl font-light'
-                    >
-                      {t('支持众多的大模型供应商')}
-                    </Text>
-                  </div>
-                  <div className='flex flex-wrap items-center justify-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 max-w-5xl mx-auto px-4'>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Moonshot size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <OpenAI size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <XAI size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Zhipu.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Volcengine.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Cohere.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Claude.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Gemini.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Suno size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Minimax.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Wenxin.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Spark.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Qingyan.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <DeepSeek.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Qwen.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Midjourney size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Grok size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <AzureAI.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Hunyuan.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Xinference.Color size={40} />
-                    </div>
-                    <div className='w-8 h-8 sm:w-10 sm:h-10 md:w-12 md:h-12 flex items-center justify-center'>
-                      <Typography.Text className='!text-lg sm:!text-xl md:!text-2xl lg:!text-3xl font-bold'>
-                        30+
-                      </Typography.Text>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
-        </div>
-      ) : (
-        <div className='overflow-x-hidden w-full'>
-          {homePageContent.startsWith('https://') ? (
-            <iframe
-              src={homePageContent}
-              className='w-full h-screen border-none'
-            />
-          ) : (
-            <div
-              className='mt-[60px]'
-              dangerouslySetInnerHTML={{ __html: homePageContent }}
-            />
-          )}
-        </div>
-      )}
-    </div>
+        ) : (
+          // 这里是加载自定义 HTML 的逻辑，保持不变，但加了容器防止背景错乱
+          <div className='w-full min-h-screen'>
+            {homePageContent.startsWith('https://') ? (
+              <iframe
+                src={homePageContent}
+                className='w-full h-screen border-none'
+              />
+            ) : (
+              <div
+                className='mt-[60px] p-4 glass-panel mx-auto'
+                dangerouslySetInnerHTML={{ __html: homePageContent }}
+              />
+            )}
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

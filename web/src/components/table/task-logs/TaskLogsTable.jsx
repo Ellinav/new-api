@@ -20,10 +20,6 @@ For commercial licensing, please contact support@quantumnous.com
 import React, { useMemo } from 'react';
 import { Empty } from '@douyinfe/semi-ui';
 import CardTable from '../../common/ui/CardTable';
-import {
-  IllustrationNoResult,
-  IllustrationNoResultDark,
-} from '@douyinfe/semi-illustrations';
 import { getTaskLogsColumns } from './TaskLogsColumnDefs';
 
 const TaskLogsTable = (taskLogsData) => {
@@ -83,12 +79,8 @@ const TaskLogsTable = (taskLogsData) => {
       size='middle'
       empty={
         <Empty
-          image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
-          darkModeImage={
-            <IllustrationNoResultDark style={{ width: 150, height: 150 }} />
-          }
+          image={<img src='/empty.png' style={{ width: 150, height: 150 }} />}
           description={t('搜索无结果')}
-          style={{ padding: 30 }}
         />
       }
       pagination={{

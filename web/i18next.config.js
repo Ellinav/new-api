@@ -25,9 +25,7 @@ export default defineConfig({
     "zh",
     "en",
     "fr",
-    "ru",
-    "ja",
-    "vi"
+    "ru"
   ],
   extract: {
     input: [

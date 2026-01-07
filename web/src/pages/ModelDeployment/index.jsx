@@ -29,6 +29,7 @@ const ModelDeploymentPage = () => {
     connectionLoading,
     connectionOk,
     connectionError,
+    apiKey,
     testConnection,
   } = useModelDeploymentSettings();
 
@@ -39,7 +40,7 @@ const ModelDeploymentPage = () => {
       connectionLoading={connectionLoading}
       connectionOk={connectionOk}
       connectionError={connectionError}
-      onRetry={() => testConnection()}
+      onRetry={() => testConnection(apiKey)}
     >
       <div className='mt-[60px] px-2'>
         <DeploymentsTable />

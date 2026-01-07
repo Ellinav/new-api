@@ -43,8 +43,7 @@ const DeploymentsTable = (deploymentsData) => {
     deploymentCount,
     compactMode,
     visibleColumns,
-    rowSelection,
-    batchOperationsEnabled = true,
+    setSelectedKeys,
     handlePageChange,
     handlePageSizeChange,
     handleRow,
@@ -96,10 +95,7 @@ const DeploymentsTable = (deploymentsData) => {
   };
 
   const handleConfirmAction = () => {
-    if (
-      selectedDeployment &&
-      (confirmOperation === 'delete' || confirmOperation === 'destroy')
-    ) {
+    if (selectedDeployment && confirmOperation === 'delete') {
       deleteDeployment(selectedDeployment.id);
     }
     setShowConfirmDialog(false);
@@ -183,7 +179,11 @@ const DeploymentsTable = (deploymentsData) => {
         hidePagination={true}
         expandAllRows={false}
         onRow={handleRow}
-        rowSelection={batchOperationsEnabled ? rowSelection : undefined}
+        rowSelection={{
+          onChange: (selectedRowKeys, selectedRows) => {
+            setSelectedKeys(selectedRows);
+          },
+        }}
         empty={
           <Empty
             image={<IllustrationNoResult style={{ width: 150, height: 150 }} />}
@@ -235,7 +235,7 @@ const DeploymentsTable = (deploymentsData) => {
         onCancel={() => setShowConfirmDialog(false)}
         onConfirm={handleConfirmAction}
         title={t('确认操作')}
-        type='danger'
+        type="danger"
         deployment={selectedDeployment}
         operation={confirmOperation}
         t={t}

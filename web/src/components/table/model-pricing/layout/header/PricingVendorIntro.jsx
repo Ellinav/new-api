@@ -260,13 +260,23 @@ const PricingVendorIntro = memo(
     );
 
     const createCoverStyle = useCallback(
-      (primaryColor) => ({
-        '--palette-primary-darkerChannel': primaryColor,
-        backgroundImage: `linear-gradient(0deg, rgba(var(--palette-primary-darkerChannel) / 80%), rgba(var(--palette-primary-darkerChannel) / 80%)), url('/cover-4.webp')`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-      }),
+      (primaryColor, bgImage = '/cover-4.webp', useGlass = false) => {
+        const style = {
+          '--palette-primary-darkerChannel': primaryColor,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+        };
+
+        if (useGlass) {
+          // 开启毛玻璃模式：只显示背景图，不加蓝色遮罩
+          style.backgroundImage = `url('${bgImage}')`;
+        } else {
+          // 默认模式：保留原来的渐变遮罩逻辑
+          style.backgroundImage = `linear-gradient(0deg, rgba(var(--palette-primary-darkerChannel) / 80%), rgba(var(--palette-primary-darkerChannel) / 80%)), url('${bgImage}')`;
+        }
+        return style;
+      },
       [],
     );
 
@@ -318,20 +328,38 @@ const PricingVendorIntro = memo(
     );
 
     const renderHeaderCard = useCallback(
-      ({ title, count, description, rightContent, primaryDarkerChannel }) => (
+      ({
+        title,
+        count,
+        description,
+        rightContent,
+        primaryDarkerChannel,
+        bgImage,
+        useGlass = false, // 新增参数
+      }) => (
         <Card
           className='!rounded-2xl shadow-sm border-0'
           cover={
             <div
               className='relative h-full'
-              style={createCoverStyle(primaryDarkerChannel)}
+              style={createCoverStyle(primaryDarkerChannel, bgImage, useGlass)}
             >
-              <div className='relative z-10 h-full flex items-center justify-between p-4'>
+              {/* 核心修改：如果是 useGlass，添加白色背景(bg-white/50)和模糊(backdrop-blur-md) */}
+              <div
+                className={`relative z-10 h-full flex items-center justify-between p-4 ${
+                  useGlass ? 'bg-white/20 backdrop-blur-[2px]' : ''
+                }`}
+              >
                 <div className='flex-1 min-w-0 mr-4'>
                   <div className='flex flex-row flex-wrap items-center gap-2 sm:gap-3 mb-2'>
                     <h2
                       className='text-lg sm:text-xl font-bold truncate'
-                      style={COMPONENT_STYLES.titleText}
+                      // 核心修改：如果是毛玻璃，文字用深灰色(#1f2937)，否则用白色
+                      style={
+                        useGlass
+                          ? { color: '#000000ff' }
+                          : COMPONENT_STYLES.titleText
+                      }
                     >
                       {title}
                     </h2>
@@ -346,7 +374,12 @@ const PricingVendorIntro = memo(
                   </div>
                   <Paragraph
                     className='text-xs sm:text-sm leading-relaxed !mb-0 cursor-pointer'
-                    style={COMPONENT_STYLES.descriptionText}
+                    // 核心修改：如果是毛玻璃，描述用灰色(#4b5563)，否则用半透白
+                    style={
+                      useGlass
+                        ? { color: '#000000ff' }
+                        : COMPONENT_STYLES.descriptionText
+                    }
                     ellipsis={{ rows: 2 }}
                     onClick={() => handleOpenDescModal(description)}
                   >
@@ -378,8 +411,10 @@ const PricingVendorIntro = memo(
         title: t('全部供应商'),
         count: currentModelCount,
         description: getVendorDescription('all'),
-        rightContent: renderAllVendorsAvatar(),
+        rightContent: null,
         primaryDarkerChannel: THEME_COLORS.allVendors.primary,
+        bgImage: '/models-bg.png', // 你的背景图
+        useGlass: true, // <--- 开启毛玻璃效果
       });
       return (
         <>

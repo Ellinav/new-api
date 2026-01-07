@@ -834,3 +834,209 @@ html.dark .with-pastel-balls::before {
 .semi-datepicker-range-input {
   border-radius: 10px !important;
 }
+.home-background {
+  /* 确保背景固定，不随滚动条滚动 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1; /* 放在最底层 */
+
+  /* 引入你的 GIF */
+  background-image: url('/background.gif');
+  background-position: center;
+  background-size: cover; /* 铺满全屏 */
+  background-repeat: no-repeat;
+}
+
+/* 2. 背景遮罩层 (让背景不那么显色/刺眼) */
+.home-background::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  /* 这里调节透明度：0.5 表示 50% 的白色遮盖 */
+  /* 如果觉得背景还是太花，把 0.5 改成 0.8 */
+  background-color: rgba(255, 255, 255, 0.4);
+  backdrop-filter: blur(2px); /* 给背景本身也加一点点模糊，更有氛围感 */
+}
+
+/* 暗黑模式下的遮罩调整 */
+html.dark .home-background::after {
+  background-color: rgba(0, 0, 0, 0.7); /* 暗黑模式盖黑色 */
+}
+
+/* 3. 毛玻璃方圆框 (用于包裹文字和按钮) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.4); /* 背景半透明白 */
+  backdrop-filter: blur(12px); /* 核心：毛玻璃模糊程度 */
+  -webkit-backdrop-filter: blur(12px); /* 兼容 Safari */
+  border-radius: 24px; /* 大圆角 */
+  border: 1px solid rgba(255, 255, 255, 0.6); /* 亮边框，增加质感 */
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15); /* 柔和的投影 */
+  padding: 40px; /* 内边距 */
+  margin-bottom: 40px;
+  max-width: 800px; /* 限制最大宽度 */
+  width: 100%;
+}
+
+/* 暗黑模式下的毛玻璃 */
+html.dark .glass-panel {
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 4. 寿司图标样式 */
+.sushi-icon {
+  width: 60px; /* 你可以根据图片大小调整这里 */
+  height: 60px;
+  object-fit: contain; /* 保持图片比例 */
+  transition: transform 0.3s ease; /* 鼠标悬停动画 */
+  cursor: pointer;
+}
+
+.sushi-icon:hover {
+  transform: scale(1.2) rotate(10deg); /* 悬停时放大并微微旋转，很可爱 */
+}
+
+.semi-layout-header {
+  /* 这里可以使用 rgba 颜色来实现半透明，或者直接用 hex 颜色 */
+  /* 例如：白色半透明：rgba(255, 255, 255, 0.8) */
+  /* 或者深色：#1a1a1a */
+  background-color: rgba(255, 255, 255, 0.85) !important;
+
+  /* 添加一点模糊效果，配合首页的毛玻璃风格 */
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+
+  /* 如果想要底部有条线，保留这个；不想要就设为 none */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+}
+
+/* 暗黑模式适配 */
+html.dark .semi-layout-header {
+  background-color: rgba(0, 0, 0, 0.6) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 2. 导航栏 Logo 样式调整 */
+.semi-layout-header .semi-navigation-header-link img {
+  /* 可以在这里限制 Logo 大小，防止它把导航栏撑得太高 */
+  height: 32px;
+  width: auto;
+}
+
+/* 3. 导航栏按钮图标样式 (配合下一步的显示代码) */
+.nav-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px; /* 图标和文字之间的距离 */
+  vertical-align: middle;
+  object-fit: contain;
+}
+/* ==================== 深色模式优化 ==================== */
+
+/* 当处于深色模式时，覆盖默认的纯黑背景 */
+body[theme-mode='dark'] {
+  /* 背景色：从纯黑改成高级深灰 */
+  --semi-color-bg-0: #161616 !important;
+  /* 次级背景色（比如卡片颜色）：稍微亮一点 */
+  --semi-color-bg-1: #1f1f1f !important;
+  /* 边框颜色：淡化一点，不那么生硬 */
+  --semi-color-border: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 优化侧边栏在深色模式下的颜色 */
+body[theme-mode='dark'] .semi-navigation {
+  background-color: #161616 !important;
+}
+
+/* ==================== 登录/注册页自适应遮罩 ==================== */
+/* 定义一个遮罩类，让它根据模式自动变黑或变白 */
+.auth-mask-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  backdrop-filter: blur(4px);
+  /* 默认（亮色模式）：白色半透明 */
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 深色模式下：变成黑色半透明 */
+body[theme-mode='dark'] .auth-mask-layer {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+/* 登录/注册卡片自适应 */
+.auth-card-bg {
+  /* 默认（亮色模式）：亮白磨砂 */
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+body[theme-mode='dark'] .auth-card-bg {
+  /* 深色模式：黑曜石磨砂 */
+  background: rgba(30, 30, 30, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 1. 修正输入框 (Input) 的样式 */
+.custom-home-input .semi-input {
+  /* 强制文字变白 */
+  color: #ffffff !important;
+  /* 强制文字加粗 */
+  font-weight: 800 !important;
+  /* 稍微加大一点字号，看起来更大气 */
+  font-size: 16px !important;
+  /* 字体用等宽字体，更有代码感（可选） */
+  font-family: monospace, sans-serif !important;
+}
+
+/* 去掉输入框聚焦时的那个蓝色光圈 (这就是你看到的 tw-ring-color) */
+.custom-home-input:focus-within {
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  box-shadow: none !important;
+  --tw-ring-color: transparent !important; /* 彻底干掉那个蓝色变量 */
+}
+
+/* 1. 变量劫持 + 字体设置 */
+.gold-text-wrapper {
+  /* --- 颜色设置 --- */
+  /* 在这里修改颜色代码，即可改变滚动字的颜色 */
+  --semi-color-primary: #ffd700 !important;
+  --semi-color-text-0: #ffd700 !important;
+  --semi-color-text-1: #ffd700 !important;
+
+  /* --- 字体设置 (新增) --- */
+  /* source-code-pro, Menlo, Consolas 是常见的代码字体栈 */
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace !important;
+  /* 稍微加一点字间距，代码风格会更明显，更好看 */
+  letter-spacing: 0.3px !important;
+}
+
+/* 2. 暴力权重（双重保险） */
+#root .gold-text-wrapper .semi-scrolllist-item-selected {
+  color: #ffd700 !important; /* 如果改颜色，这里也要改 */
+  background-color: transparent !important;
+  font-weight: 800 !important;
+
+  /* 确保选中状态也继承代码字体 */
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace !important;
+}
+
+/* 3. 滚动中的状态 */
+#root .gold-text-wrapper .semi-scrolllist-item,
+#root .gold-text-wrapper .semi-scrolllist-item-wheel-item {
+  color: #ffd700 !important; /* 如果改颜色，这里也要改 */
+  opacity: 1 !important;
+
+  /* 确保滚动状态也继承代码字体 */
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace !important;
+}

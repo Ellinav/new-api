@@ -104,7 +104,7 @@ const PageLayout = () => {
     loadStatus().catch(console.error);
     let systemName = getSystemName();
     if (systemName) {
-      document.title = systemName;
+      document.title = '寿司喵';
     }
     let logo = getLogo();
     if (logo) {

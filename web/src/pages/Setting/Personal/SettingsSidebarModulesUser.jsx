@@ -32,7 +32,7 @@ import { API, showSuccess, showError } from '../../../helpers';
 import { StatusContext } from '../../../context/Status';
 import { UserContext } from '../../../context/User';
 import { useUserPermissions } from '../../../hooks/common/useUserPermissions';
-import { mergeAdminConfig, useSidebar } from '../../../hooks/common/useSidebar';
+import { useSidebar } from '../../../hooks/common/useSidebar';
 import { Settings } from 'lucide-react';
 
 const { Text } = Typography;
@@ -198,25 +198,9 @@ export default function SettingsSidebarModulesUser() {
       try {
         // 获取管理员全局配置
         if (statusState?.status?.SidebarModulesAdmin) {
-          try {
-            const adminConf = JSON.parse(
-              statusState.status.SidebarModulesAdmin,
-            );
-            const mergedAdminConf = mergeAdminConfig(adminConf);
-            setAdminConfig(mergedAdminConf);
-            console.log('加载管理员边栏配置:', mergedAdminConf);
-          } catch (error) {
-            const mergedAdminConf = mergeAdminConfig(null);
-            setAdminConfig(mergedAdminConf);
-            console.log(
-              '加载管理员边栏配置失败，使用默认配置:',
-              mergedAdminConf,
-            );
-          }
-        } else {
-          const mergedAdminConf = mergeAdminConfig(null);
-          setAdminConfig(mergedAdminConf);
-          console.log('管理员边栏配置缺失，使用默认配置:', mergedAdminConf);
+          const adminConf = JSON.parse(statusState.status.SidebarModulesAdmin);
+          setAdminConfig(adminConf);
+          console.log('加载管理员边栏配置:', adminConf);
         }
 
         // 获取用户个人配置
@@ -340,11 +324,6 @@ export default function SettingsSidebarModulesUser() {
         { key: 'channel', title: t('渠道管理'), description: t('API渠道配置') },
         { key: 'models', title: t('模型管理'), description: t('AI模型配置') },
         {
-          key: 'deployment',
-          title: t('模型部署'),
-          description: t('模型部署管理'),
-        },
-        {
           key: 'redemption',
           title: t('兑换码管理'),
           description: t('兑换码生成管理'),
@@ -410,7 +389,7 @@ export default function SettingsSidebarModulesUser() {
               </Text>
             </div>
             <Switch
-              checked={sidebarModulesUser[section.key]?.enabled !== false}
+              checked={sidebarModulesUser[section.key]?.enabled}
               onChange={handleSectionChange(section.key)}
               size='default'
             />
@@ -422,9 +401,7 @@ export default function SettingsSidebarModulesUser() {
               <Col key={module.key} xs={24} sm={12} md={8} lg={6} xl={6}>
                 <Card
                   className={`!rounded-xl border border-gray-200 hover:border-blue-300 transition-all duration-200 ${
-                    sidebarModulesUser[section.key]?.enabled !== false
-                      ? ''
-                      : 'opacity-50'
+                    sidebarModulesUser[section.key]?.enabled ? '' : 'opacity-50'
                   }`}
                   bodyStyle={{ padding: '16px' }}
                   hoverable
@@ -440,15 +417,10 @@ export default function SettingsSidebarModulesUser() {
                     </div>
                     <div className='ml-4'>
                       <Switch
-                        checked={
-                          sidebarModulesUser[section.key]?.[module.key] !==
-                          false
-                        }
+                        checked={sidebarModulesUser[section.key]?.[module.key]}
                         onChange={handleModuleChange(section.key, module.key)}
                         size='default'
-                        disabled={
-                          sidebarModulesUser[section.key]?.enabled === false
-                        }
+                        disabled={!sidebarModulesUser[section.key]?.enabled}
                       />
                     </div>
                   </div>

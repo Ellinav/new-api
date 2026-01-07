@@ -87,7 +87,12 @@ const RechargeCard = ({
   const onlineFormApiRef = useRef(null);
   const redeemFormApiRef = useRef(null);
   const showAmountSkeleton = useMinimumLoadingTime(amountLoading);
-  console.log(' enabled screem ?', enableCreemTopUp, ' products ?', creemProducts);
+  console.log(
+    ' enabled screem ?',
+    enableCreemTopUp,
+    ' products ?',
+    creemProducts,
+  );
   return (
     <Card className='!rounded-2xl shadow-sm border-0'>
       {/* 卡片头部 */}
@@ -120,8 +125,11 @@ const RechargeCard = ({
             <div
               className='relative h-30'
               style={{
-                '--palette-primary-darkerChannel': '37 99 235',
-                backgroundImage: `linear-gradient(0deg, rgba(var(--palette-primary-darkerChannel) / 80%), rgba(var(--palette-primary-darkerChannel) / 80%)), url('/cover-4.webp')`,
+                // 删除原有的 --palette-primary-darkerChannel
+                // 修改 backgroundImage:
+                // 1. 使用 rgba(0, 0, 0, 0.6) 实现灰黑色遮罩
+                // 2. 将 url 改为 '/bg1.png'
+                backgroundImage: `linear-gradient(0deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('/bg1.png')`,
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',
@@ -503,7 +511,8 @@ const RechargeCard = ({
                             {t('充值额度')}: {product.quota}
                           </div>
                           <div className='text-lg font-semibold text-blue-600'>
-                            {product.currency === 'EUR' ? '€' : '$'}{product.price}
+                            {product.currency === 'EUR' ? '€' : '$'}
+                            {product.price}
                           </div>
                         </Card>
                       ))}
