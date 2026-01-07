@@ -1,22 +1,23 @@
 name: Build and Push Docker Image
 
 on:
+  # 触发条件：推送到 main 分支时触发 (如果是 master 分支请修改这里)
   push:
     branches:
-      - main  # ⚠️ 如果你的主分支叫 master，请改为 master
-    paths-ignore:
-      - 'README.md'
-      - 'docs/**'
+      - "main"
+      - "master"
+  # 允许手动在 GitHub 网页界面点击运行
   workflow_dispatch:
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Set up QEMU
+        # 启用 QEMU 以支持构建 ARM 架构镜像 (防止本地构建卡死的核心)
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
@@ -28,36 +29,17 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # (可选) 如果你也想推送到 GitHub Packages (ghcr.io)，保留这一步，否则可删除
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract metadata (tags, labels)
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: |
-            # 自动使用你的 DockerHub 用户名
-            ${{ secrets.DOCKERHUB_USERNAME }}/new-api
-            # (可选) GHCR 镜像地址
-            ghcr.io/${{ github.repository }}
-          tags: |
-            type=raw,value=latest
-            type=ref,event=branch
-            type=sha,format=long
-
       - name: Build and push
         uses: docker/build-push-action@v6
         with:
           context: .
-          # 构建 amd64 和 arm64 两种架构
+          # 同时构建 amd64 (普通服务器/Windows) 和 arm64 (Mac M芯片/树莓派)
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          # ⚠️ 注意：下面这一行要把 '你的Docker用户名' 改成你真实的用户名
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/new-api:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/new-api:${{ github.sha }}
+          # 禁用缓存导出，简化流程，避免复杂的缓存配置问题
           cache-from: type=gha
           cache-to: type=gha,mode=max
