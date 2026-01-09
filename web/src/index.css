@@ -563,28 +563,34 @@ code {
 /* ==================== 未读通知闪光效果 ==================== */
 @keyframes sweep-shine {
   0% {
-    background-position: 200% 0;
+    background-position: 200% center;
   }
-
   100% {
-    background-position: -200% 0;
+    background-position: -200% center;
   }
 }
 
 .shine-text {
+  /* 基础颜色：紫色(#a34ce2) -> 中间流光：金色(#ffd700) -> 基础颜色：紫色 */
   background: linear-gradient(
-    90deg,
-    currentColor 0%,
-    currentColor 40%,
-    rgba(255, 255, 255, 0.9) 50%,
-    currentColor 60%,
-    currentColor 100%
+    to right,
+    #a34ce2 0%,
+    #a34ce2 40%,
+    #ffd700 50%,
+    #a34ce2 60%,
+    #a34ce2 100%
   );
-  background-size: 200% 100%;
-  -webkit-background-clip: text;
+  background-size: 200% auto;
+
+  /* 文字遮罩核心代码 */
+  color: #a34ce2; /* 兼容不支持 clip 的浏览器 */
   background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  animation: sweep-shine 4s linear infinite;
+
+  /* 动画设置 */
+  animation: sweep-shine 3s linear infinite;
+  font-weight: 800; /* 加粗效果更好 */
 }
 
 .dark .shine-text {
